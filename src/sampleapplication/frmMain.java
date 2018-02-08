@@ -4,6 +4,9 @@
  */
 package sampleapplication;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -35,12 +38,15 @@ public class frmMain extends javax.swing.JFrame {
     static ImageIcon imgDatabaseFound;
     static ImageIcon imgDatabaseInsert;
     
+    static List previousReceptions;
+        
      /**
      * Creates new form frmMain
      */
     public frmMain() {
         
         initComponents();
+        previousReceptions = new ArrayList<String>();
         
         // Make object arrays for referencing
         callPhonePics[1] = picLine1;
@@ -395,6 +401,27 @@ public class frmMain extends javax.swing.JFrame {
     
     public static void handleData(String inData){
         
+        
+        // Duplicate handling ------------------------------
+        if(previousReceptions.contains(inData)){
+            return;
+        }
+        else{
+        
+            if(previousReceptions.size()>30){
+                // Buffer full, add to end and delete oldest
+                previousReceptions.add(inData);
+                previousReceptions.remove(0);
+            }
+            else{
+                // Buffer not full, simply add to end
+                previousReceptions.add(inData);
+            }            
+        }        
+        
+        // -------------------------------------------------
+        
+        
         String myData = inData;
         String command;
         Integer myLine=0;
@@ -504,6 +531,13 @@ public class frmMain extends javax.swing.JFrame {
                 break;
 
             case "IE":
+                
+                // Phone end of call
+                callPanels[myLine].setBackground(Color.lightGray);
+
+                // Change picture of phone to not-ringing
+                callPhonePics[myLine].setIcon(imgOnHook);
+                
                 break;
             case "OS":
 
@@ -525,7 +559,11 @@ public class frmMain extends javax.swing.JFrame {
                 break;
 
             case "OE":
+                // Phone end of call
+                callPanels[myLine].setBackground(Color.lightGray);
 
+                // Change picture of phone to not-ringing
+                callPhonePics[myLine].setIcon(imgOnHook);
                 break;
         }
                    
