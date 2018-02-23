@@ -399,6 +399,28 @@ public class frmMain extends javax.swing.JFrame {
         
     }
     
+    private static void removeFromReceptionBuffer(String reception){
+        
+        ArrayList<Integer> indexes = new ArrayList<>();
+        int cnt = 0;
+
+        for(int i = 0; i < previousReceptions.size() - 1; i++) {
+
+           String pReception = (String) previousReceptions.get(i);
+           if(pReception.contains(reception.substring(reception.length()-20))){
+               indexes.add(cnt);
+           }
+           cnt++;
+        }
+
+        for(int i = indexes.size()-1; i >= 0; i--){
+           int remove = indexes.get(i);
+           previousReceptions.remove(remove);
+        }
+
+        
+    }
+    
     public static void handleData(String inData){
         
         
@@ -455,6 +477,10 @@ public class frmMain extends javax.swing.JFrame {
                 
             }
 
+            if(myIndicator.equals("E")){
+                removeFromReceptionBuffer(myData);
+            }
+            
         }
         
         Pattern myPatternDetailed = Pattern.compile(".*(\\d\\d) ([NFR]) {13}(\\d\\d/\\d\\d \\d\\d:\\d\\d:\\d\\d)");
